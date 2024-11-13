@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: pran902/mongo-wanderlust:4.4.18  
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    env_file:
+      - ./backend/.env
+    build:
+      context: ./backend
+    image: backend  
+    container_name: backend-wanderlust
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  frontend:
+    env_file:
+      - ./frontend/.env.local
+    build:
+      context: ./frontend
+    image: frontend  
+    container_name: frontend-wanderlust
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+
